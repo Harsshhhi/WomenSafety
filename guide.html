@@ -42,7 +42,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guide - Here Am</title>
+  <title>Guide | Here I Am</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -54,6 +54,7 @@
     .nav-icon {
       width: 20px;
       height: 20px;
+      fill: currentColor;
       margin-right: 8px;
       transition: transform 0.3s ease;
     }
@@ -92,6 +93,16 @@
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23F06292' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
       background-size: cover;
     }
+    #mobile-menu {
+      transition: max-height 0.3s ease-in-out;
+      overflow: hidden;
+    }
+    #mobile-menu.hidden {
+      max-height: 0;
+    }
+    #mobile-menu:not(.hidden) {
+      max-height: 1000px; /* Adjust as needed for content */
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -101,7 +112,7 @@
         <svg class="w-8 h-8 mr-2" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2a10 10 0 0 0-7.2 16.8L12 22l7.2-3.2A10 10 0 0 0 12 2zm0 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
         </svg>
-        Here Am
+        Here I Am
       </h1>
       <div class="md:hidden">
         <button id="hamburger" class="text-white focus:outline-none">
@@ -112,55 +123,55 @@
       </div>
       <nav id="nav-menu" class="hidden md:flex space-x-4">
         <a href="home.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2L2 9v12h6v-6h6v6h6V9l-10-7zm0 2.8l6 4.2V19h-2v-6H8v6H6V9l6-4.2z"/>
           </svg>
           Home
         </a>
         <a href="guide.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           Guide
         </a>
         <a href="emergency.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           Emergency
         </a>
         <a href="safest-path.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-7.2 16.8L12 22l7.2-3.2A10 10 0 0 0 12 2zm-1 14H9v-2h2v-2H9v-2h2V8H9V6h2v10zm4 0h-2v-2h2v-2h-2V6h2v10z"/>
           </svg>
           Safe Path
         </a>
         <a href="share-live-location.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-7.2 16.8L12 22l7.2-3.2A10 10 0 0 0 12 2zm0 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
           </svg>
           Share Location
         </a>
         <a href="sos.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           SOS
         </a>
         <a href="community.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.07 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
           </svg>
           Community
         </a>
         <a href="chatbot.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z"/>
           </svg>
           AI Chatbot
         </a>
         <a href="about-us.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
           </svg>
           About Us
@@ -170,55 +181,55 @@
     <div id="mobile-menu" class="hidden md:hidden bg-pink-400 shadow">
       <nav class="flex flex-col space-y-2 p-4">
         <a href="home.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2L2 9v12h6v-6h6v6h6V9l-10-7zm0 2.8l6 4.2V19h-2v-6H8v6H6V9l6-4.2z"/>
           </svg>
           Home
         </a>
         <a href="guide.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           Guide
         </a>
         <a href="emergency.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           Emergency
         </a>
         <a href="safest-path.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-7.2 16.8L12 22l7.2-3.2A10 10 0 0 0 12 2zm-1 14H9v-2h2v-2H9v-2h2V8H9V6h2v10zm4 0h-2v-2h2v-2h-2V6h2v10z"/>
           </svg>
           Safe Path
         </a>
         <a href="share-live-location.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-7.2 16.8L12 22l7.2-3.2A10 10 0 0 0 12 2zm0 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
           </svg>
           Share Location
         </a>
         <a href="sos.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8c0-2.2.9-4.2 2.3-5.7L12 12v-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2v3l5.7-5.7A8 8 0 0 1 20 12a8 8 0 0 1-8 8z"/>
           </svg>
           SOS
         </a>
         <a href="community.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.07 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
           </svg>
           Community
         </a>
         <a href="chatbot.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z"/>
           </svg>
           AI Chatbot
         </a>
         <a href="about-us.html" class="text-white hover:text-gray-200 flex items-center nav-link">
-          <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
           </svg>
           About Us
@@ -303,4 +314,43 @@
       </div>
     </div>
     <div class="wave"></div>
-  </
+  </main>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+    // Hamburger menu toggle
+    document.getElementById('hamburger').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
