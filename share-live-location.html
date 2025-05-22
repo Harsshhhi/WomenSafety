@@ -1,43 +1,36 @@
 <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
+  var gk_isXlsx = false;
+  var gk_xlsxFileLookup = {};
+  var gk_fileData = {};
+  function filledCell(cell) {
+    return cell !== '' && cell != null;
+  }
+  function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+      try {
+        var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+        var firstSheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[firstSheetName];
+        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+        var filteredData = jsonData.filter(row => row.some(filledCell));
+        var headerRowIndex = filteredData.findIndex((row, index) =>
+          row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+        );
+        if (headerRowIndex === -1 || headerRowIndex > 25) {
+          headerRowIndex = 0;
         }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+        var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+        csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+        return csv;
+      } catch (e) {
+        console.error(e);
+        return "";
+      }
+    }
+    return gk_fileData[filename] || "";
+  }
+</script>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -45,6 +38,8 @@
   <title>Share Live Location | Here I Am</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     body {
       background: linear-gradient(135deg, #FFFFFF, #FFE4E1);
@@ -94,7 +89,6 @@
     }
     #map {
       height: 400px;
-      background-color: #e5e7eb;
       border-radius: 0.75rem;
     }
   </style>
@@ -232,20 +226,17 @@
     </div>
   </header>
   <main class="max-w-7xl mx-auto py-8 px-6 flex-grow relative">
-    <h2 class="text-3xl font-bold text-pink-500 mb-6 fade-in">Share Your Live Location</h2>
-    <div class="bg-white p-6 rounded-xl shadow card fade-in mb-6">
+    <h2 class="text-3xl font-bold text-pink-500 mb-6 fade-in" id="pageTitle">Share Your Live Location</h2>
+    <div class="bg-white p-6 rounded-xl shadow card fade-in mb-6" id="shareCard">
       <p class="text-gray-600 mb-4">Share your live location with trusted contacts for added safety.</p>
       <button id="shareLocationBtn" class="bg-pink-500 text-white px-6 py-3 rounded-full hover:bg-pink-600 transition">Share Live Location</button>
       <div id="locationLink" class="mt-4 hidden">
         <p class="text-gray-600">Your location link:</p>
-        <input type="text" id="locationLinkInput" class="w-full p-3 border border-gray-300 rounded-lg mt-2" readonly value="https://heream.com/location/12345">
+        <input type="text" id="locationLinkInput" class="w-full p-3 border border-gray-300 rounded-lg mt-2" readonly>
         <button id="copyLinkBtn" class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition">Copy Link</button>
       </div>
     </div>
-    <div id="map" class="fade-in">
-      <!-- Placeholder for map (requires integration with a mapping API like Google Maps) -->
-      <p class="text-center text-gray-600 pt-20">Your live location will be displayed here...</p>
-    </div>
+    <div id="map" class="fade-in"></div>
     <div class="wave"></div>
   </main>
   <footer class="bg-gradient-to-r from-pink-400 to-pink-500 text-white mt-auto">
@@ -294,27 +285,117 @@
     </div>
   </footer>
   <script>
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const shareLocationBtn = document.getElementById('shareLocationBtn');
-    const locationLinkDiv = document.getElementById('locationLink');
-    const copyLinkBtn = document.getElementById('copyLinkBtn');
-    const locationLinkInput = document.getElementById('locationLinkInput');
+    // Initialize map
+    const map = L.map('map').setView([51.505, -0.09], 13); // Default view (London)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-    hamburger.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
+    let marker = null;
+    let watchId = null;
 
-    shareLocationBtn.addEventListener('click', () => {
-      locationLinkDiv.classList.remove('hidden');
-      // In a real application, this would fetch the user's location and generate a shareable link
-    });
+    // Function to update map with current location
+    function updateLocation(position) {
+      const { latitude, longitude } = position.coords;
+      const latlng = [latitude, longitude];
+      
+      // Update map view and marker
+      map.setView(latlng, 15);
+      if (marker) {
+        marker.setLatLng(latlng);
+      } else {
+        marker = L.marker(latlng).addTo(map)
+          .bindPopup('You are here!')
+          .openPopup();
+      }
 
-    copyLinkBtn.addEventListener('click', () => {
-      locationLinkInput.select();
-      document.execCommand('copy');
-      alert('Link copied to clipboard!');
-    });
+      // Generate shareable link
+      const locationLink = `${window.location.origin}${window.location.pathname}?lat=${latitude}&lng=${longitude}`;
+      document.getElementById('locationLinkInput').value = locationLink;
+      document.getElementById('locationLink').classList.remove('hidden');
+    }
+
+    // Handle geolocation errors
+    function handleLocationError(error) {
+      console.error('Geolocation error:', error.message);
+      alert('Unable to access location. Please ensure location services are enabled.');
+      document.getElementById('map').innerHTML = '<p class="text-center text-gray-600 pt-20">Unable to display location. Please try again.</p>';
+    }
+
+    // Function to display shared location from URL parameters
+    function displaySharedLocation(lat, lng) {
+      const latlng = [parseFloat(lat), parseFloat(lng)];
+      if (isNaN(latlng[0]) || isNaN(latlng[1])) {
+        document.getElementById('map').innerHTML = '<p class="text-center text-gray-600 pt-20">Invalid location data.</p>';
+        return;
+      }
+      map.setView(latlng, 15);
+      marker = L.marker(latlng).addTo(map)
+        .bindPopup('Shared location')
+        .openPopup();
+      document.getElementById('pageTitle').textContent = 'View Shared Location';
+      document.getElementById('shareCard').style.display = 'none'; // Hide sharing controls
+    }
+
+    // Check for URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const lat = urlParams.get('lat');
+    const lng = urlParams.get('lng');
+
+    if (lat && lng) {
+      // Display shared location if parameters are present
+      displaySharedLocation(lat, lng);
+    } else {
+      // Event listeners for sharing location
+      const hamburger = document.getElementById('hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const shareLocationBtn = document.getElementById('shareLocationBtn');
+      const locationLinkDiv = document.getElementById('locationLink');
+      const copyLinkBtn = document.getElementById('copyLinkBtn');
+      const locationLinkInput = document.getElementById('locationLinkInput');
+
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      shareLocationBtn.addEventListener('click', () => {
+        if (navigator.geolocation) {
+          if (!watchId) {
+            // Start watching position
+            watchId = navigator.geolocation.watchPosition(updateLocation, handleLocationError, {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
+            shareLocationBtn.textContent = 'Stop Sharing Location';
+          } else {
+            // Stop watching position
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+            shareLocationBtn.textContent = 'Share Live Location';
+            locationLinkDiv.classList.add('hidden');
+            if (marker) {
+              map.removeLayer(marker);
+              marker = null;
+            }
+            map.setView([51.505, -0.09], 13); // Reset to default view
+          }
+        } else {
+          alert('Geolocation is not supported by your browser.');
+        }
+      });
+
+      copyLinkBtn.addEventListener('click', () => {
+        locationLinkInput.select();
+        try {
+          document.execCommand('copy');
+          alert('Link copied to clipboard!');
+        } catch (err) {
+          console.error('Failed to copy:', err);
+          alert('Failed to copy link. Please copy it manually.');
+        }
+      });
+    }
   </script>
 </body>
 </html>
